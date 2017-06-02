@@ -83,6 +83,7 @@ int main()
 	{
 		tree.add_element(i);
 	}
+	printf("In-order-walk...\n");
 	tree.print_sorted(tree.get_root_ptr());
 	system("pause");
 	return 0;
