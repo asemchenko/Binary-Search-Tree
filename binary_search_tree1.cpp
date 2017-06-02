@@ -63,6 +63,126 @@ void print_sorted(Node* start)
 	}
 	return;
 }
+keyT get_min_value()
+{
+	Node* n = root;
+	if (n)
+	{
+		while (n->left_child != NULL)
+		{
+			n = n->left_child;
+		}
+		return n->key;
+	}
+	return 0;
+}
+keyT get_min_value(Node* n)
+{
+	if (n)
+	{
+		while (n->left_child != NULL)
+		{
+			n = n->left_child;
+		}
+		return n->key;
+	}
+	return 0;
+}
+keyT get_max_value()
+{
+	Node* n = root;
+	if (n)
+	{
+		while (n->right_child)
+		{
+			n = n->right_child;
+		}
+		return n->key;
+	}
+	return 0;
+}
+keyT get_max_value(Node* n)
+{
+	if (n)
+	{
+		while (n->right_child)
+		{
+			n = n->right_child;
+		}
+		return n->key;
+	}
+	return 0;
+}
+Node* search(keyT key)
+{
+	Node* n = root;
+	if (!n)
+	{
+		return NULL;
+	}
+	else
+	{
+		while (n)
+		{
+			if (n->key == key)
+			{
+				return n;
+			}
+			n = n->key < key ? n->right_child : n->left_child;
+		}
+	}
+}
+keyT get_preccessor(keyT key)
+{
+	Node* input_node = search(key);
+	if (input_node != NULL)
+	{
+		if (input_node->left_child)
+		{
+			return get_max_value(input_node->left_child);
+		}
+		else
+		{
+			Node* prev_node = input_node->parent;
+			if (!prev_node)
+			{
+				printf("Error! Current node has'nt preccessor!\n");
+				return 0;
+			}
+			while (prev_node && (prev_node->right_child == input_node) )
+			{
+				input_node = prev_node;
+				prev_node = prev_node->parent;
+			}
+			return prev_node->key;
+		}
+	}
+}
+keyT get_preccessor(Node* input_node)
+{
+	if (input_node != NULL)
+	{
+		if (input_node->left_child)
+		{
+			return get_min_value(input_node->left_child);
+		}
+		else
+		{
+			Node* prev_node = input_node->parent;
+			if (!prev_node)
+			{
+				printf("Error! Current node has'nt preccessor!\n");
+				return 0;
+			}
+			while (prev_node && (prev_node->right_child == input_node))
+			{
+				input_node = prev_node;
+				prev_node = prev_node->parent;
+			}
+			return prev_node->key;
+		}
+	}
+}
 private:
 	Node* root = NULL;
 	void erase_memory(Node* vertex_start)
@@ -79,12 +199,11 @@ private:
 int main()
 {
 	Tree<int> tree;
-	for (int i = 20; i >= 0; i--)
+	for (int i = 200; i >= 0; i--)
 	{
 		tree.add_element(i);
 	}
-	printf("In-order-walk...\n");
-	tree.print_sorted(tree.get_root_ptr());
+	std::cout<<tree.get_preccessor(12)<<std::endl;
 	system("pause");
 	return 0;
 }
