@@ -3,6 +3,9 @@
 
 #include "stdafx.h"
 #include <iostream>
+#include <vector>
+#include <algorithm>
+#include <time.h>
 template <typename keyT>
 class Tree
 {
@@ -46,7 +49,7 @@ public:
 		else
 		{
 			node->parent = prev_node;
-			prev_node->key < node->key ? prev_node->right_child : prev_node->left_child = node;
+			( (prev_node->key < node->key) ? (prev_node->right_child) : (prev_node->left_child) )= node;
 		}
 	}
 	Node* get_root_ptr()
@@ -58,7 +61,8 @@ public:
 		if (start != NULL)
 		{
 			print_sorted(start->left_child);
-			std::cout << start->key << std::endl;
+			//std::cout << start->key << std::endl;
+			printf("%5d", start->key);
 			print_sorted(start->right_child);
 		}
 		return;
@@ -330,16 +334,32 @@ private:
 		delete vertex_start;
 	}
 };
+
+inline bool cmp(int a, int b)
+{
+	return a < b;
+}
 int main()
 {
+	srand(time(NULL));
 	Tree<int> tree;
+	std::vector<int> a;
 	for (int i = 200; i >= 0; i--)
 	{
-		tree.add_element(i);
+		int el = rand() % 300;
+		tree.add_element(el);
+		a.push_back(el);
 	}
-	std::cout << tree.get_successor(tree.search(12))->key << std::endl;
-	tree.remove(13);
-	std::cout << tree.get_successor(tree.search(12))->key << std::endl;
+	std::sort(a.begin(), a.end(), cmp);
+	for (int i = 0; i < a.size(); i++)
+	{
+		printf("%5d", a[i]);
+	}
+	printf("\nFrom tree:\n");
+	tree.print_sorted(tree.get_root_ptr());
+	//std::cout << tree.get_successor(tree.search(12))->key << std::endl;
+	//tree.remove(13);
+	//std::cout << tree.get_successor(tree.search(12))->key << std::endl;
 	system("pause");
 	return 0;
 }
