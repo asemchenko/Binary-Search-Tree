@@ -63,7 +63,7 @@ void print_sorted(Node* start)
 	}
 	return;
 }
-keyT get_min_value()
+Node* get_min_value()
 {
 	Node* n = root;
 	if (n)
@@ -72,11 +72,11 @@ keyT get_min_value()
 		{
 			n = n->left_child;
 		}
-		return n->key;
+		return n;
 	}
-	return 0;
+	return NULL;
 }
-keyT get_min_value(Node* n)
+Node* get_min_value(Node* n)
 {
 	if (n)
 	{
@@ -84,11 +84,11 @@ keyT get_min_value(Node* n)
 		{
 			n = n->left_child;
 		}
-		return n->key;
+		return n;
 	}
-	return 0;
+	return NULL;
 }
-keyT get_max_value()
+Node* get_max_value()
 {
 	Node* n = root;
 	if (n)
@@ -97,11 +97,11 @@ keyT get_max_value()
 		{
 			n = n->right_child;
 		}
-		return n->key;
+		return n;
 	}
-	return 0;
+	return NULL;
 }
-keyT get_max_value(Node* n)
+Node* get_max_value(Node* n)
 {
 	if (n)
 	{
@@ -109,9 +109,9 @@ keyT get_max_value(Node* n)
 		{
 			n = n->right_child;
 		}
-		return n->key;
+		return n;
 	}
-	return 0;
+	return NULL;
 }
 Node* search(keyT key)
 {
@@ -132,7 +132,7 @@ Node* search(keyT key)
 		}
 	}
 }
-keyT get_preccessor(keyT key)
+Node* get_preccessor(keyT key)
 {
 	Node* input_node = search(key);
 	if (input_node != NULL)
@@ -144,43 +144,90 @@ keyT get_preccessor(keyT key)
 		else
 		{
 			Node* prev_node = input_node->parent;
-			if (!prev_node)
-			{
-				printf("Error! Current node has'nt preccessor!\n");
-				return 0;
-			}
 			while (prev_node && (prev_node->right_child == input_node) )
 			{
 				input_node = prev_node;
 				prev_node = prev_node->parent;
 			}
-			return prev_node->key;
+			return prev_node;
 		}
 	}
+	else
+	{
+		return NULL;
+	}
 }
-keyT get_preccessor(Node* input_node)
+Node* get_preccessor(Node* input_node)
 {
 	if (input_node != NULL)
 	{
 		if (input_node->left_child)
 		{
-			return get_min_value(input_node->left_child);
+			return get_max_value(input_node->left_child);
 		}
 		else
 		{
 			Node* prev_node = input_node->parent;
-			if (!prev_node)
-			{
-				printf("Error! Current node has'nt preccessor!\n");
-				return 0;
-			}
-			while (prev_node && (prev_node->right_child == input_node))
+			while (prev_node && (prev_node->left_child == input_node))
 			{
 				input_node = prev_node;
 				prev_node = prev_node->parent;
 			}
-			return prev_node->key;
+			return prev_node;
 		}
+	}
+	else
+	{
+		return NULL;
+	}
+}
+Node* get_successor(keyT key)
+{
+	Node* input_node = search(key);
+	if (input_node)
+	{
+		if (input_node->right_child)
+		{
+			return get_min_value(input_node->right_child);
+		}
+		else
+		{
+			Node* p = input_node->parent;
+			while ((p) && (p->right_child == input_node))
+			{
+				input_node = p;
+				p = p->parent;
+			}
+			return p;
+		}
+	}
+	else
+	{
+		return NULL;
+	}
+}
+Node* get_successor(Node* input_node)
+{
+	if (input_node)
+	{
+		if (input_node->right_child)
+		{
+			return get_min_value(input_node->right_child);
+		}
+		else
+		{
+			Node* p = input_node->parent;
+			while ((p) && (p->right_child == input_node))
+			{
+				input_node = p;
+				p = p->parent;
+			}
+			return p;
+		}
+	}
+	else
+	{
+		return NULL;
 	}
 }
 private:
@@ -203,7 +250,7 @@ int main()
 	{
 		tree.add_element(i);
 	}
-	std::cout<<tree.get_preccessor(12)<<std::endl;
+	std::cout<<tree.get_successor(tree.search(12))->key<<std::endl;
 	system("pause");
 	return 0;
 }
