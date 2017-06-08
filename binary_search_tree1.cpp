@@ -339,7 +339,12 @@ public:
 
 	void right_rotation(Node* n)
 	{
-		// this func implement rotation tree right relatively node n
+		// this func implement right rotation tree relatively node n
+		if (n == NULL)
+		{
+			return;
+		}
+
 		Node* left_child_n = n->left_child;
 		if (left_child_n == NULL)
 		{
@@ -365,6 +370,41 @@ public:
 		}
 		left_child_n->right_child = n;
 		n->parent = left_child_n;
+	}
+
+	void left_rotation(Node* n)
+	{
+		// this func implement left rotation tree relatively node n
+		if (n == NULL)
+		{
+			return;
+		}
+
+		Node* right_child_n = n->right_child;
+		if (right_child_n == NULL)
+		{
+			return;
+		}
+		// if n has parent
+		right_child_n->parent = n->parent;
+		if (n->parent)
+		{
+			// making node left_child child of n->parent
+			(n->parent->right_child == n ? n->parent->right_child : n->parent->left_child) = right_child_n;
+		}
+		else
+		{
+			// if n is root
+			root = right_child_n;
+		}
+		// changing left child of n
+		n->right_child = right_child_n->left_child;
+		if (n->right_child)
+		{
+			n->right_child->parent = n;
+		}
+		right_child_n->left_child = n;
+		n->parent = right_child_n;
 	}
 private:
 	Node* root = NULL;
@@ -432,7 +472,7 @@ int main()
 		int rNode;
 		printf("Input rotation node key: ");
 		scanf_s("%d", &rNode);
-		tree.right_rotation(tree.search(rNode));
+		tree.left_rotation(tree.search(rNode));
 		tree.print_tree();
 	}
 	tree.print_tree();
