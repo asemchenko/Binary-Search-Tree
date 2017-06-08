@@ -49,7 +49,7 @@ public:
 		else
 		{
 			node->parent = prev_node;
-			( (prev_node->key < node->key) ? (prev_node->right_child) : (prev_node->left_child) )= node;
+			(prev_node->key < node->key ? prev_node->right_child : prev_node->left_child) = node;
 		}
 	}
 	Node* get_root_ptr()
@@ -126,7 +126,7 @@ public:
 			{
 				return n;
 			}
-			n = n->key < key ? n->right_child : n->left_child;
+			n = (n->key < key ? n->right_child : n->left_child);
 		}
 		return NULL;
 	}
@@ -261,11 +261,11 @@ public:
 				{
 					root = child;
 				}
-				fact_rm_node->parent->right_child == fact_rm_node ? fact_rm_node->parent->right_child : fact_rm_node->parent->left_child = child;
+				(fact_rm_node->parent->right_child == fact_rm_node ? fact_rm_node->parent->right_child : fact_rm_node->parent->left_child) = child;
 			}
 			else
 			{
-				fact_rm_node->parent->right_child == fact_rm_node ? fact_rm_node->parent->right_child : fact_rm_node->parent->left_child = NULL;
+				(fact_rm_node->parent->right_child == fact_rm_node ? fact_rm_node->parent->right_child : fact_rm_node->parent->left_child) = NULL;
 			}
 			delete fact_rm_node;
 			return true;
@@ -307,11 +307,11 @@ public:
 				{
 					root = child;
 				}
-				fact_rm_node->parent->right_child == fact_rm_node ? fact_rm_node->right_child : fact_rm_node->left_child = child;
+				(fact_rm_node->parent->right_child == fact_rm_node ? fact_rm_node->right_child : fact_rm_node->left_child) = child;
 			}
 			else
 			{
-				fact_rm_node->parent->right_child == fact_rm_node ? fact_rm_node->right_child : fact_rm_node->left_child = NULL;
+				(fact_rm_node->parent->right_child == fact_rm_node ? fact_rm_node->right_child : fact_rm_node->left_child) = NULL;
 			}
 			delete fact_rm_node;
 			return true;
@@ -320,6 +320,10 @@ public:
 		{
 			return false;
 		}
+	}
+	void print_tree()
+	{
+		print_subtree(root, 0);
 	}
 private:
 	Node* root = NULL;
@@ -333,6 +337,36 @@ private:
 		erase_memory(vertex_start->right_child);
 		delete vertex_start;
 	}
+	void print_offset(int ofs)
+	{
+		// this function used for printing tree
+		for (int i = 0; i < ofs; i++)
+		{
+			printf(" ");
+		}
+	}
+	void print_subtree(Node* root, int offset = 0)
+	{
+		const int offset_step = 6;
+		std::cout << root->key << std::endl;
+		if (root->left_child)
+		{
+			print_offset(offset);
+			printf("|\n");
+			print_offset(offset);
+			printf("+-----");
+			print_subtree(root->left_child, offset + offset_step);
+		}
+		if (root->right_child)
+		{
+			print_offset(offset);
+			printf("|\n");
+			print_offset(offset);
+			printf("+-----");
+			print_subtree(root->right_child, offset + offset_step);
+		}
+		printf("\n");
+	}
 };
 
 inline bool cmp(int a, int b)
@@ -343,23 +377,12 @@ int main()
 {
 	srand(time(NULL));
 	Tree<int> tree;
-	std::vector<int> a;
-	for (int i = 200; i >= 0; i--)
+	for (int i = 0; i< 10; i++)
 	{
-		int el = rand() % 300;
+		int el = rand() % 30;
 		tree.add_element(el);
-		a.push_back(el);
 	}
-	std::sort(a.begin(), a.end(), cmp);
-	for (int i = 0; i < a.size(); i++)
-	{
-		printf("%5d", a[i]);
-	}
-	printf("\nFrom tree:\n");
-	tree.print_sorted(tree.get_root_ptr());
-	//std::cout << tree.get_successor(tree.search(12))->key << std::endl;
-	//tree.remove(13);
-	//std::cout << tree.get_successor(tree.search(12))->key << std::endl;
+	tree.print_tree();
 	system("pause");
 	return 0;
 }
