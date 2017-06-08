@@ -54,6 +54,16 @@ public:
 			(prev_node->key < node->key ? prev_node->right_child : prev_node->left_child) = node;
 		}
 	}
+	void add_element_to_root(keyT element)
+	{
+		Node* node = new Node;
+		node->key = element;
+		node->right_child = NULL;
+		node->left_child = NULL;
+		node->parent = NULL;
+
+		insert_to_root_subtree(root, NULL, node);
+	}
 
 	Node* get_root_ptr()
 	{
@@ -435,7 +445,7 @@ private:
 			print_offset(offset);
 			printf("|\n");
 			print_offset(offset);
-			printf("+-----");
+			printf("R-----");
 			print_subtree(root->right_child, offset + offset_step);
 		}
 		if (root->left_child)
@@ -443,10 +453,33 @@ private:
 			print_offset(offset);
 			printf("|\n");
 			print_offset(offset);
-			printf("+-----");
+			printf("L-----");
 			print_subtree(root->left_child, offset + offset_step);
 		}
 		printf("\n");
+	}
+	void insert_to_root_subtree(Node* &root_subtree, Node* root_subtree_p, Node* element)
+	{
+		// this func is used in function add_element_to_root
+		// this func add element to root subtree with root root_subtree
+		if (root_subtree == NULL)
+		{
+			root_subtree = element;
+			element->parent = root_subtree_p;
+		}
+		else
+		{
+			if (element->key < root_subtree->key)
+			{
+				insert_to_root_subtree(root_subtree->left_child, root_subtree, element);
+				right_rotation(root_subtree);
+			}
+			else
+			{
+				insert_to_root_subtree(root_subtree->right_child, root_subtree, element);
+				left_rotation(root_subtree);
+			}
+		}
 	}
 };
 int main()
@@ -457,6 +490,7 @@ int main()
 	printf("How many nodes you want insert? ");
 	scanf_s("%d", &count_nodes);
 	printf("\n");
+	/*
 	for (int i = 0; i < count_nodes; i++)
 	{
 		int k;
@@ -466,13 +500,15 @@ int main()
 		tree.add_element(k);
 		printf("Tree: \n");
 		tree.print_tree();
-	}
+	}*/
 	while (true)
 	{
-		int rNode;
-		printf("Input rotation node key: ");
-		scanf_s("%d", &rNode);
-		tree.left_rotation(tree.search(rNode));
+		int k;
+		printf("Input node key: ");
+		scanf_s("%d", &k);
+		printf("\n");
+		tree.add_element_to_root(k);
+		printf("Tree: \n");
 		tree.print_tree();
 	}
 	tree.print_tree();
