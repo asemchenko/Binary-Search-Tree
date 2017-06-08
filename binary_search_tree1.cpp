@@ -6,6 +6,7 @@
 #include <vector>
 #include <algorithm>
 #include <time.h>
+using namespace std;
 template <typename keyT>
 class Tree
 {
@@ -27,6 +28,7 @@ public:
 		node->key = element;
 		node->right_child = NULL;
 		node->left_child = NULL;
+		node->parent = NULL;
 
 		Node* prev_node = NULL;
 		Node *current = root;
@@ -52,21 +54,24 @@ public:
 			(prev_node->key < node->key ? prev_node->right_child : prev_node->left_child) = node;
 		}
 	}
+
 	Node* get_root_ptr()
 	{
 		return root;
 	}
+
 	void print_sorted(Node* start)
 	{
+		// this func print elements of tree in sorted view
 		if (start != NULL)
 		{
 			print_sorted(start->left_child);
-			//std::cout << start->key << std::endl;
 			printf("%5d", start->key);
 			print_sorted(start->right_child);
 		}
 		return;
 	}
+
 	Node* get_min_value()
 	{
 		Node* n = root;
@@ -92,6 +97,7 @@ public:
 		}
 		return NULL;
 	}
+
 	Node* get_max_value()
 	{
 		Node* n = root;
@@ -117,6 +123,7 @@ public:
 		}
 		return NULL;
 	}
+
 	Node* search(keyT key)
 	{
 		Node* n = root;
@@ -130,6 +137,7 @@ public:
 		}
 		return NULL;
 	}
+
 	Node* get_preccessor(keyT key)
 	{
 		Node* input_node = search(key);
@@ -179,6 +187,7 @@ public:
 			return NULL;
 		}
 	}
+
 	Node* get_successor(keyT key)
 	{
 		Node* input_node = search(key);
@@ -228,6 +237,7 @@ public:
 			return NULL;
 		}
 	}
+
 	bool remove(keyT key)
 	{
 		Node* removing_node = search(key);
@@ -321,9 +331,40 @@ public:
 			return false;
 		}
 	}
+
 	void print_tree()
 	{
 		print_subtree(root, 0);
+	}
+
+	void right_rotation(Node* n)
+	{
+		// this func implement rotation tree right relatively node n
+		Node* left_child_n = n->left_child;
+		if (left_child_n == NULL)
+		{
+			return;
+		}
+		// if n has parent
+		left_child_n->parent = n->parent;
+		if (n->parent)
+		{
+			// making node left_child child of n->parent
+			(n->parent->left_child == n ? n->parent->left_child : n->parent->right_child) = left_child_n;
+		}
+		else
+		{
+			// if n is root
+			root = left_child_n;
+		}
+		// changing left child of n
+		n->left_child = left_child_n->right_child;
+		if (n->left_child)
+		{
+			n->left_child->parent = n;
+		}
+		left_child_n->right_child = n;
+		n->parent = left_child_n;
 	}
 private:
 	Node* root = NULL;
@@ -349,14 +390,6 @@ private:
 	{
 		const int offset_step = 6;
 		std::cout << root->key << std::endl;
-		if (root->left_child)
-		{
-			print_offset(offset);
-			printf("|\n");
-			print_offset(offset);
-			printf("+-----");
-			print_subtree(root->left_child, offset + offset_step);
-		}
 		if (root->right_child)
 		{
 			print_offset(offset);
@@ -365,22 +398,42 @@ private:
 			printf("+-----");
 			print_subtree(root->right_child, offset + offset_step);
 		}
+		if (root->left_child)
+		{
+			print_offset(offset);
+			printf("|\n");
+			print_offset(offset);
+			printf("+-----");
+			print_subtree(root->left_child, offset + offset_step);
+		}
 		printf("\n");
 	}
 };
-
-inline bool cmp(int a, int b)
-{
-	return a < b;
-}
 int main()
 {
 	srand(time(NULL));
 	Tree<int> tree;
-	for (int i = 0; i< 10; i++)
+	int count_nodes;
+	printf("How many nodes you want insert? ");
+	scanf_s("%d", &count_nodes);
+	printf("\n");
+	for (int i = 0; i < count_nodes; i++)
 	{
-		int el = rand() % 30;
-		tree.add_element(el);
+		int k;
+		printf("Input node key: ");
+		scanf_s("%d", &k);
+		printf("\n");
+		tree.add_element(k);
+		printf("Tree: \n");
+		tree.print_tree();
+	}
+	while (true)
+	{
+		int rNode;
+		printf("Input rotation node key: ");
+		scanf_s("%d", &rNode);
+		tree.right_rotation(tree.search(rNode));
+		tree.print_tree();
 	}
 	tree.print_tree();
 	system("pause");
