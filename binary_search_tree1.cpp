@@ -23,7 +23,7 @@ int main()
 		printf("Input node key: ");
 		scanf_s("%d", &k);
 		printf("\n");
-		tree.add_element_to_root(k);
+		tree.insertRandom(k);
 		printf("Tree: \n");
 		tree.show(tree.get_root_ptr(),tree.get_high(tree.get_root_ptr()));
 	}

@@ -45,6 +45,7 @@ public:
 			node->parent = prev_node;
 			(prev_node->key < node->key ? prev_node->right_child : prev_node->left_child) = node;
 		}
+		count_nodes++;
 	}
 	void add_element_to_root(keyT element)
 	{
@@ -55,6 +56,7 @@ public:
 		node->parent = NULL;
 
 		insert_to_root_subtree(root, NULL, node);
+		count_nodes++;
 	}
 
 	Node* get_root_ptr()
@@ -280,6 +282,7 @@ public:
 				(fact_rm_node->parent->right_child == fact_rm_node ? fact_rm_node->parent->right_child : fact_rm_node->parent->left_child) = NULL;
 			}
 			delete fact_rm_node;
+			count_nodes--;
 			return true;
 		}
 		else
@@ -326,6 +329,7 @@ public:
 				(fact_rm_node->parent->right_child == fact_rm_node ? fact_rm_node->right_child : fact_rm_node->left_child) = NULL;
 			}
 			delete fact_rm_node;
+			count_nodes--;
 			return true;
 		}
 		else
@@ -439,8 +443,20 @@ public:
 		cout << t->key << endl;
 		show(t->left_child, h + 3);
 	}
+
+	void insertRandom(keyT element)
+	{
+		Node* newNode = new Node;
+		newNode->parent = NULL;
+		newNode->left_child = NULL;
+		newNode->right_child = NULL;
+		newNode->key = element;
+		rand_insert_to_root_subtree(root, NULL, newNode);
+		count_nodes++;
+	}
 private:
 	Node* root = NULL;
+	int count_nodes = 0;
 	void erase_memory(Node* vertex_start)
 	{
 		if (vertex_start == NULL)
@@ -502,6 +518,36 @@ private:
 				insert_to_root_subtree(root_subtree->right_child, root_subtree, element);
 				left_rotation(root_subtree);
 			}
+		}
+	}
+	void rand_insert_to_root_subtree(Node* root_subtree, Node* root_subtree_p, Node* element)
+	{
+		// this func insert element in root_subtree with probability 1/(count_nodes + 1)
+		if (root_subtree == NULL)
+		{
+			if (root_subtree_p != NULL)
+			{
+				(element->key < root_subtree_p->key ? root_subtree_p->left_child : root_subtree_p->right_child) = element;
+			}
+			else
+			{
+				root = element;
+			}
+			element->parent = root_subtree_p;
+			return;
+		}
+		if (rand() < RAND_MAX/(count_nodes+1))
+		{
+			insert_to_root_subtree(root_subtree, root_subtree_p, element);
+			return;
+		}
+		if (element->key < root_subtree->key)
+		{
+			rand_insert_to_root_subtree(root_subtree->left_child, root_subtree, element);
+		}
+		else
+		{
+			rand_insert_to_root_subtree(root_subtree->right_child, root_subtree, element);
 		}
 	}
 };
